@@ -15,6 +15,7 @@ class Equipo {
     String region;
     String ubicacion;
     LocalDate fechaCreacion;
+    List<Jugador> jugadores = new ArrayList<>();
 }
 class Jugador {
     String nombre;
@@ -24,12 +25,13 @@ class Jugador {
     String nickname;
     String rol;
     String sueldo;
+}
 
     public class Main {
 
-    // Creamos los arrays de jugadores y equipos
+    // Creamos el array de equipos
     static List<Equipo> equipos = new ArrayList<>();
-    //static List<Jugador> jugadores = new ArrayList<>();
+
 
     public static void main(String[] args) {
         boolean correcto = false;
@@ -46,47 +48,62 @@ class Jugador {
                     //TODO Poder gestionar jugadores y equipos
             String opciones = sc.nextLine();
 
-                switch (opciones) {
+            switch (opciones) {
 
-                    case "a":
-                        datosJugador();
+                case "a":
+                    // Registrar jugador
+                    Jugador j = datosJugador(sc);
+                    break;
 
-                        break;
+                case "b":
+                    // Registrar equipo y añadirlo al array
+                    Equipo e = datosEquipo(sc);
+                    if (e != null) {
+                        equipos.add(e);
+                    }
+                    break;
 
-            case "b":
-                // Registrar equipo y añadirlo al array
-                Equipo e = datosEquipo(sc);
-                if (e != null) {
-                    equipos.add(e);
-                }
-                break;
+                case "c":
+                    // Seleccionar equipo y ver su información
+                    System.out.println("¿Qué equipo quieres ver? (1-" + equipos.size() + ")");
+                    int num = sc.nextInt() - 1;  // ← restar 1, porque get() es 0-based
+                    sc.nextLine();
 
-            case "c":
-                // Seleccionar equipo y ver su información
-                System.out.println("¿Qué equipo quieres ver? (1-" + equipos.size() + ")");
-                int num = sc.nextInt() - 1;  // ← restar 1, porque get() es 0-based
-                sc.nextLine();
+                    if (num >= 0 && num < equipos.size()) {
+                        Equipo eq = equipos.get(num);
+                        System.out.println("Nombre: " + eq.nombre);
+                        System.out.println("Abreviatura: " + eq.abreviatura);
+                        System.out.println("Region: " + eq.region);
+                        System.out.println("Ubicacion: " + eq.ubicacion);
+                        System.out.println("Fecha: " + eq.fechaCreacion);
 
-                if (num >= 0 && num < equipos.size()) {
-                    Equipo eq = equipos.get(num);
-                    System.out.println("Nombre: " + eq.nombre);
-                    System.out.println("Abreviatura: " + eq.abreviatura);
-                    System.out.println("Region: " + eq.region);
-                    System.out.println("Ubicacion: " + eq.ubicacion);
-                    System.out.println("Fecha: " + eq.fechaCreacion);
-                } else {
-                    System.out.println("Equipo no existe.");
-                }
-                break;
+                        System.out.println("¿Ver lista de jugadores? (S/N)");
+                        String ans = sc.nextLine().trim().toLowerCase();
 
+                        if (ans.equalsIgnoreCase("s") || ans.equalsIgnoreCase("si")) {
+                            if (eq.jugadores.isEmpty()) {
+                                System.out.println("Este equipo no tiene jugadores.");
+                            } else {
+                                System.out.println("--- Jugadores de " + eq.nombre + " ---");
+                                for (Jugador jug : eq.jugadores) {
+                                    System.out.println(jug.nombre + " " + jug.apellido + " - " + jug.rol);
+                                }
+                            }
+                        }
+                    } else {
+                        System.out.println("Equipo no existe");
+                    }
+                    break;
 
-            case "d" :  JOptionPane.showMessageDialog(null, "Hasta la próxima");
-                // Finalizar el programa
-                correcto = true;
-                break;
+                case "d" :
+                    System.out.println("Hasta la próxima");
 
-                    default:
-                        JOptionPane.showMessageDialog(null, "Elige una de las opciones");
+                    // Finalizar el programa
+                    correcto = true;
+                    break;
+
+                default:
+                    System.out.println("Elige una de las opciones");
 
                 }
             }
@@ -155,9 +172,15 @@ class Jugador {
             }
         }
 
-        public static Jugador datosJugador() {
+        public static Jugador datosJugador(Scanner sc) {
+
+            // Comprobramos que hay equipos antes de crear el jugador
+            if (equipos.isEmpty()) {
+                System.out.println("Registra un equipo primero (opción b)");
+                return null;
+            }
+
             Jugador j = new Jugador();
-            Scanner sc = new Scanner(System.in);
 
             System.out.println("=======Datos del jugador=======");
             System.out.println("Introduce los siguintes Datos");
@@ -264,21 +287,40 @@ class Jugador {
                 System.out.println(e.getMessage());
             }
 
+            System.out.println("Introduce el equipo:");
+            for (int i = 0; i < 6; i++) {
+                System.out.println((i +1) + ") " + equipos.get(i).nombre);
+            }
+
+            int numEquipo;
+            try {
+                numEquipo = sc.nextInt() -1;
+            } catch (Exception e) {
+                System.out.println("Entrada inválida.");
+                return null;
+            }
+            sc.nextLine();
+
+            if (numEquipo < 0 || numEquipo >= equipos.size()) {
+                System.out.println("El equipo no existe. Asegurate de que los nombres coincidan.");
+                return null;
+            }
+
+            // Añadir el jugador a su equipo
+            equipos.get(numEquipo).jugadores.add(j);
+            System.out.println(j.nombre + " " + j.apellido + " asignado a " + equipos.get(numEquipo).nombre);
+
             // Impresión final de datos
             System.out.println("=======Datos del jugador=======");
+            System.out.println("Equipo: " + equipos.get(numEquipo));
+            System.out.println("Nickname: " + j.nickname);
             System.out.println("Nombre: " + j.nombre);
             System.out.println("Apellido: " + j.apellido);
             System.out.println("Nacionalidad: " + j.nacionalidad);
             System.out.println("Fecha de nacimiento: " + j.fecha);
-            System.out.println("Nickname: " + j.nickname);
             System.out.println("Rol: " + j.rol);
             System.out.println("Sueldo: " + j.sueldo);
-
-            //menu
 
             return j;
         }
     }
-
-
-}
