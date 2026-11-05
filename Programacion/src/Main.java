@@ -17,37 +17,61 @@ class Equipo {
 
 public class Main {
 
+    // Creamos los arrays de jugadores y equipos
     static List<Equipo> equipos = new ArrayList<>();
+    //static List<Jugador> jugadores = new ArrayList<>();
 
     public static void main(String[] args) {
         boolean correcto = false;
+
+        // Repetitiva para que siempre generemos el menu
         while (!correcto){
-
-        String opciones = JOptionPane.showInputDialog(null, "Bienvenido a Counter Strike\n" +
-                                                                                    "Elige una opción\n" +
-                                                                                    "a) Registrar jugador\n" +
-                                                                                    "b) Registrar equipo\n" +
-                                                                                    "c) Ver equipos\n" +
-                                                                                    "d) Salir");
-
+            Scanner sc = new Scanner(System.in);
+            System.out.println("===== BIENVENIDO AL TORNEO DE CS2 =====\n" +
+                    "Selecciona una opcion!\n" +
+                    "a) Registrar jugador\n" +
+                    "b) Registrar equipo\n" +
+                    "c) Ver equipos\n" +
+                    "d) Salir");
+                    //TODO Poder gestionar jugadores y equipos
+            String opciones = sc.nextLine();
 
         switch (opciones) {
 
             case "a":
-                datosJugador();
+                //datosJugador();
 
                 break;
 
             case "b":
-                datosEquipo();
-
+                // Registrar equipo y añadirlo al array
+                Equipo e = datosEquipo(sc);
+                if (e != null) {
+                    equipos.add(e);
+                }
                 break;
 
             case "c":
-                verEquipos();
+                // Seleccionar equipo y ver su información
+                System.out.println("¿Qué equipo quieres ver? (1-" + equipos.size() + ")");
+                int num = sc.nextInt() - 1;  // ← restar 1, porque get() es 0-based
+                sc.nextLine();
+
+                if (num >= 0 && num < equipos.size()) {
+                    Equipo eq = equipos.get(num);
+                    System.out.println("Nombre: " + eq.nombre);
+                    System.out.println("Abreviatura: " + eq.abreviatura);
+                    System.out.println("Region: " + eq.region);
+                    System.out.println("Ubicacion: " + eq.ubicacion);
+                    System.out.println("Fecha: " + eq.fechaCreacion);
+                } else {
+                    System.out.println("Equipo no existe.");
+                }
+                break;
 
 
             case "d" :  JOptionPane.showMessageDialog(null, "Hasta la próxima");
+                // Finalizar el programa
                 correcto = true;
                 break;
 
