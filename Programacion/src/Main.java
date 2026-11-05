@@ -27,19 +27,24 @@ class Jugador {
 
     public class Main {
 
-        static List<Equipo> equipos = new ArrayList<>();
+    // Creamos los arrays de jugadores y equipos
+    static List<Equipo> equipos = new ArrayList<>();
+    //static List<Jugador> jugadores = new ArrayList<>();
 
-        public static void main(String[] args) {
-            boolean correcto = false;
-            while (!correcto){
+    public static void main(String[] args) {
+        boolean correcto = false;
 
-                String opciones = JOptionPane.showInputDialog(null, "Bienvenido a Counter Strike\n" +
-                        "Elige una opción\n" +
-                        "a) Registrar jugador\n" +
-                        "b) Registrar equipo\n" +
-                        "c) Ver equipos\n" +
-                        "d) Salir");
-
+        // Repetitiva para que siempre generemos el menu
+        while (!correcto){
+            Scanner sc = new Scanner(System.in);
+            System.out.println("===== BIENVENIDO AL TORNEO DE CS2 =====\n" +
+                    "Selecciona una opcion!\n" +
+                    "a) Registrar jugador\n" +
+                    "b) Registrar equipo\n" +
+                    "c) Ver equipos\n" +
+                    "d) Salir");
+                    //TODO Poder gestionar jugadores y equipos
+            String opciones = sc.nextLine();
 
                 switch (opciones) {
 
@@ -48,18 +53,37 @@ class Jugador {
 
                         break;
 
-                    case "b":
-                        datosEquipo();
+            case "b":
+                // Registrar equipo y añadirlo al array
+                Equipo e = datosEquipo(sc);
+                if (e != null) {
+                    equipos.add(e);
+                }
+                break;
 
-                        break;
+            case "c":
+                // Seleccionar equipo y ver su información
+                System.out.println("¿Qué equipo quieres ver? (1-" + equipos.size() + ")");
+                int num = sc.nextInt() - 1;  // ← restar 1, porque get() es 0-based
+                sc.nextLine();
 
-                    case "c":
-                        verEquipos();
+                if (num >= 0 && num < equipos.size()) {
+                    Equipo eq = equipos.get(num);
+                    System.out.println("Nombre: " + eq.nombre);
+                    System.out.println("Abreviatura: " + eq.abreviatura);
+                    System.out.println("Region: " + eq.region);
+                    System.out.println("Ubicacion: " + eq.ubicacion);
+                    System.out.println("Fecha: " + eq.fechaCreacion);
+                } else {
+                    System.out.println("Equipo no existe.");
+                }
+                break;
 
 
-                    case "d" :  JOptionPane.showMessageDialog(null, "Hasta la próxima");
-                        correcto = true;
-                        break;
+            case "d" :  JOptionPane.showMessageDialog(null, "Hasta la próxima");
+                // Finalizar el programa
+                correcto = true;
+                break;
 
                     default:
                         JOptionPane.showMessageDialog(null, "Elige una de las opciones");
