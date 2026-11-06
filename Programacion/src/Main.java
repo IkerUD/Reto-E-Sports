@@ -39,15 +39,18 @@ class Jugador {
         // Repetitiva para que siempre generemos el menu
         while (!correcto){
             Scanner sc = new Scanner(System.in);
-            System.out.println("===== BIENVENIDO AL TORNEO DE CS2 =====\n" +
+            System.out.println("\n===== BIENVENIDO AL TORNEO DE CS2 =====\n" +
                     "Selecciona una opcion!\n" +
                     "a) Registrar jugador\n" +
                     "b) Registrar equipo\n" +
                     "c) Ver equipos\n" +
-                    "d) Salir");
+                    "d) Generar Calendario\n" +
+                    "e) Salir" +
+                    "===== ===== ===== =====");
                     //TODO Poder gestionar jugadores y equipos
             String opciones = sc.nextLine();
 
+            // A las funciones les mandamos el scanner para no tener que abrirlo en cada uno
             switch (opciones) {
 
                 case "a":
@@ -80,6 +83,7 @@ class Jugador {
                         System.out.println("¿Ver lista de jugadores? (S/N)");
                         String ans = sc.nextLine().trim().toLowerCase();
 
+                        // Comprobar que el usuario quiere ver la lista de jugadores y mostrarla
                         if (ans.equalsIgnoreCase("s") || ans.equalsIgnoreCase("si")) {
                             if (eq.jugadores.isEmpty()) {
                                 System.out.println("Este equipo no tiene jugadores.");
@@ -95,10 +99,14 @@ class Jugador {
                     }
                     break;
 
-                case "d" :
+                // Aqui tendremos que hacer para generar el calendario
+                case "d":
+                    System.out.println("Función no disponible todavía");
+
+                // Finalizar programa
+                case "e" :
                     System.out.println("Hasta la próxima");
 
-                    // Finalizar el programa
                     correcto = true;
                     break;
 
@@ -115,7 +123,7 @@ class Jugador {
 
             try {
 
-                System.out.println("===== Datos Equipo =====");
+                System.out.println("\n===== Datos Equipo =====");
                 System.out.println("Introduce el nombre del equipo:");
                 e.nombre = sc.nextLine();
 
@@ -124,9 +132,27 @@ class Jugador {
 
                 System.out.println("Introduce la region:");
                 e.region = sc.nextLine();
+                try {
+                    Pattern pat = Pattern.compile("^(?=.*[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ])[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ ]{2,15}$");
+                    Matcher mat = pat.matcher(e.region);
+                    if (!mat.matches()) {
+                        throw new IllegalArgumentException("No válido");
+                    }
+                } catch (IllegalArgumentException ex) {
+                    System.out.println(ex.getMessage());
+                }
 
                 System.out.println("Introduce la ubicacion:");
                 e.ubicacion = sc.nextLine();
+                try {
+                    Pattern pat = Pattern.compile("^(?=.*[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ])[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ ]{2,15}$");
+                    Matcher mat = pat.matcher(e.ubicacion);
+                    if (!mat.matches()) {
+                        throw new IllegalArgumentException("No válido");
+                    }
+                } catch (IllegalArgumentException ex) {
+                    System.out.println(ex.getMessage());
+                }
 
                 System.out.println("Introduce la fecha de creación (dd/MM/yyyy):");
                 String fechaString = sc.nextLine();
@@ -145,7 +171,7 @@ class Jugador {
                 e.fechaCreacion = fecha;
 
                 // Mostrar la información proporcionada
-                System.out.println("===== NUEVO EQUIPO --> " + e.nombre + " =====");
+                System.out.println("\n===== NUEVO EQUIPO --> " + e.nombre + " =====");
                 System.out.println("Nombre: " + e.nombre);
                 System.out.println("Abreviatura: " + e.abreviatura);
                 System.out.println("Region: " + e.region);
@@ -162,6 +188,7 @@ class Jugador {
         }
 
         public static boolean validarFecha(String fechaString) {
+            // La fecha es "uuuu" y no "yyyy" porque daba problemas para validar con "yyyy"
             String patron = "dd/MM/uuuu";
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern(patron).withResolverStyle(ResolverStyle.STRICT);
             try {
@@ -182,7 +209,7 @@ class Jugador {
 
             Jugador j = new Jugador();
 
-            System.out.println("=======Datos del jugador=======");
+            System.out.println("\n=======Datos del jugador=======");
             System.out.println("Introduce los siguintes Datos");
 
             // 1. Nombre
@@ -301,9 +328,13 @@ class Jugador {
             }
             sc.nextLine();
 
-            if (numEquipo < 0 || numEquipo >= equipos.size()) {
-                System.out.println("El equipo no existe. Asegurate de que los nombres coincidan.");
-                return null;
+            try {
+                if (numEquipo < 0 || numEquipo >= equipos.size()) {
+                    System.out.println("El equipo no existe. Asegurate de que los nombres coincidan.");
+                    return null;
+                }
+            } catch (Exception e) {
+                System.out.println("Error al mostrar el equipo");
             }
 
             // Añadir el jugador a su equipo
